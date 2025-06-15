@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "tasks-app": {
+    "angular-tasks-app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -61,10 +61,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "tasks-app:build:production"
+              "buildTarget": "angular-tasks-app:build:production"
             },
             "development": {
-              "buildTarget": "tasks-app:build:development"
+              "buildTarget": "angular-tasks-app:build:development"
             }
           },
           "defaultConfiguration": "development"
