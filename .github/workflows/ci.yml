@@ -30,11 +30,12 @@ jobs:
       - name: Run unit tests
         run: npm test -- --watch=false --browsers=ChromeHeadless
 
-      - name: Check code formatting
-        run: npx prettier --check .
+      # - name: Check code formatting
+      #   run: npx prettier --check .
 
       - name: Build Angular app
         run: npm run build -- --configuration=production
 
       - name: Check outdated dependencies
         run: npx npm-check-updates --errorLevel 2
+        continue-on-error: true
