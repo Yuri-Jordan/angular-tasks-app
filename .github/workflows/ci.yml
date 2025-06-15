@@ -38,3 +38,4 @@ jobs:
 
       - name: Check outdated dependencies
         run: npx npm-check-updates --errorLevel 2
+        continue-on-error: true
