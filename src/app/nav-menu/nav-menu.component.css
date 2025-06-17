@@ -1,0 +1,7 @@
+.red-toolbar {
+  background-color: #f44336 !important; /* Material Red 500 */
+  color: #fff;
+}
+mat-icon {
+  color: #fff;
+}
