@@ -1,14 +1,14 @@
 <header>
-  <mat-toolbar color="primary">
+  <mat-toolbar class="red-toolbar">
     <button mat-icon-button [routerLink]="['/']">
-      <mat-icon>
+      <mat-icon class="white-icon">
         home
       </mat-icon>
     </button>
-    <a mat-flat-button color="primary" [routerLink]="['/tasks']">
+    <a mat-flat-button [routerLink]="['/tasks']">
       Listar Tarefas
     </a>
-    <a mat-flat-button color="primary" [routerLink]="['/tasks', 'new']">
+    <a mat-flat-button [routerLink]="['/tasks', 'new']">
       Criar Tarefas
     </a>
   </mat-toolbar>
