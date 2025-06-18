@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskFormComponent } from './task-form.component';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { AngularMaterialModule } from '../../angular-material-module/angular-material-module.module';
+import { SharedModule } from '../../shared/shared.module';
+
 
 describe('TaskFormComponent', () => {
   let component: TaskFormComponent;
@@ -8,7 +13,20 @@ describe('TaskFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TaskFormComponent]
+      imports: [
+        AngularMaterialModule,
+        SharedModule,
+      ],
+      declarations: [TaskFormComponent],
+      providers: [
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: { params: {} },
+          params: of({}),
+        }
+      }
+    ]
     })
     .compileComponents();
 

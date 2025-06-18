@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TaskService } from '../../core/task.service';
+import { TaskService } from '../services/task.service';
 import { ITask } from '../models/ITask';
 
 @Component({

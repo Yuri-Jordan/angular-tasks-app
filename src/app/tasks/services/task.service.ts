@@ -1,12 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ITask } from '../tasks/models/ITask';
+import { ITask } from '../models/ITask';
 
-@Injectable()
+@Injectable(
+  {
+    providedIn: 'root'
+  }
+)
 export class TaskService {
 
-   private itemsUrl = 'api/items';
+   private itemsUrl = 'api/tasks';
 
   constructor(private http: HttpClient) { }
 

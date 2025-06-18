@@ -41,7 +41,7 @@ export class TaskFormComponent {
 
   loadData() {
 
-    var idParam = this.activatedRoute.snapshot.paramMap.get('id');
+    var idParam = this.activatedRoute?.snapshot?.paramMap?.get('id');
     this.id = idParam ? +idParam : 0;
     // if (this.id) {
 

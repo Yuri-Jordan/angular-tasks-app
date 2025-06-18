@@ -4,20 +4,22 @@ import { Observable } from 'rxjs';
 import { ITask } from '../tasks/models/ITask';
 import { TASK_MOCKS } from './mocks/ITaskMock';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InMemoryDataService implements InMemoryDbService {
-  items: ITask[];
+  tasks: ITask[];
 
   constructor() {
-    this.items = TASK_MOCKS;
+    this.tasks = TASK_MOCKS;
   }
 
   createDb() {
-    return { items: this.items };
+    return { tasks: this.tasks };
   }
 
   getAllItems(reqInfo: any): Observable<any> {
-    const items = this.items;
+    const items = this.tasks;
     return reqInfo.utils.createResponse$(() => ({
       body: items,
       status: 200,
@@ -26,7 +28,7 @@ export class InMemoryDataService implements InMemoryDbService {
 
   getItemById(reqInfo: any): Observable<any> {
     const id = reqInfo.id;
-    const item = this.items.find((i: any) => i.id === id);
+    const item = this.tasks.find((i: any) => i.id === id);
     return reqInfo.utils.createResponse$(() => ({
       body: item,
       status: item ? 200 : 404,
@@ -35,8 +37,8 @@ export class InMemoryDataService implements InMemoryDbService {
 
   addNewItem(reqInfo: any): Observable<any> {
     const newItem = reqInfo.utils.getJsonBody(reqInfo.req);
-    newItem.id = this.items.length + 1; 
-    this.items.push(newItem);
+    newItem.id = this.tasks.length + 1; 
+    this.tasks.push(newItem);
     return reqInfo.utils.createResponse$(() => ({
       body: newItem,
       status: 201,
@@ -46,11 +48,11 @@ export class InMemoryDataService implements InMemoryDbService {
   updateItem(reqInfo: any): Observable<any> {
     const id = reqInfo.id;
     const updatedItem = reqInfo.utils.getJsonBody(reqInfo.req);
-    const index = this.items.findIndex((i: any) => i.id === id);
+    const index = this.tasks.findIndex((i: any) => i.id === id);
     if (index !== -1) {
-      this.items[index] = { ...this.items[index], ...updatedItem };
+      this.tasks[index] = { ...this.tasks[index], ...updatedItem };
       return reqInfo.utils.createResponse$(() => ({
-        body: this.items[index],
+        body: this.tasks[index],
         status: 200,
       }));
     } else {
@@ -63,9 +65,9 @@ export class InMemoryDataService implements InMemoryDbService {
 
   deleteItem(reqInfo: any): Observable<any> {
     const id = reqInfo.id;
-    const index = this.items.findIndex((i: any) => i.id === id);
+    const index = this.tasks.findIndex((i: any) => i.id === id);
     if (index !== -1) {
-      const deletedItem = this.items.splice(index, 1)[0];
+      const deletedItem = this.tasks.splice(index, 1)[0];
       return reqInfo.utils.createResponse$(() => ({
         body: deletedItem,
         status: 200,
