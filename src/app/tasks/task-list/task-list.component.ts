@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { TaskService } from '../../core/task.service';
+import { ITask } from '../models/ITask';
 
 @Component({
   selector: 'app-task-list',
@@ -8,4 +10,16 @@ import { Component } from '@angular/core';
 })
 export class TaskListComponent {
 
+  items: ITask[] = [];
+
+  constructor(private taskService: TaskService) { }
+
+  ngOnInit() {
+    this.getItems();
+  }
+
+  getItems(): void {
+    this.taskService.getItems()
+      .subscribe(items => this.items = items);
+  }
 }

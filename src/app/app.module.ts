@@ -10,6 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { HomeComponent } from './home/home.component';
 import { RouterLink } from '@angular/router';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { CoreModule } from './core/core.module';
+import { InMemoryDataService } from './core/in-memory-data-service.service';
 
 
 @NgModule({
@@ -19,6 +22,7 @@ import { RouterLink } from '@angular/router';
     HomeComponent
   ],
   imports: [
+    CoreModule,
     BrowserModule,
     AppRoutingModule,
     MatIconModule,
@@ -26,6 +30,9 @@ import { RouterLink } from '@angular/router';
     MatToolbarModule,
     RouterLink,
     AppRoutingModule,
+    HttpClientInMemoryWebApiModule.forRoot(
+      InMemoryDataService, { dataEncapsulation: false }
+    )
   ],
   providers: [],
   bootstrap: [AppComponent],
