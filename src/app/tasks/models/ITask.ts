@@ -1,7 +1,7 @@
 export interface ITask {
   id: number;
   titulo: string;
-  descrição?: string;
+  descricao?: string;
   dataVencimento: Date;
   tarefaCompletada: boolean;
 }

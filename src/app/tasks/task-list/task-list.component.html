@@ -1,1 +1,69 @@
-{{items | json}}
+<h1>Listagem de tarefas</h1>
+
+
+<p *ngIf="!tasks"><em>Carregando...</em></p>
+
+<button mat-flat-button color="primary" class="btn-add" *ngIf="tasks" [routerLink]="['/tasks', 'new']">
+    Criar nova tarefa
+</button>
+
+<form [formGroup]="filterForm">
+    <mat-form-field form [hidden]="!tasks">
+        <input matInput formControlName="titulo" placeholder="Busque pelo Título da tarefa" />
+    </mat-form-field>
+</form>
+
+<div style="width: 100%; max-width: 100vw; overflow: auto;">
+    <table mat-table [dataSource]="tasks" class="mat-elevation-z8" [hidden]="!tasks" matSort
+        (matSortChange)="loadData()" [matSortActive]="defaultSortColumn" [matSortDirection]="defaultSortOrder">
+
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let task">{{task.id}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="titulo">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Título</th>
+            <td mat-cell *matCellDef="let task">
+                <a [routerLink]="['/tasks', task.id]">{{task.titulo}}</a>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="descricao">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Descrição</th>
+            <td mat-cell *matCellDef="let task">{{task.descricao}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="dataVencimento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Prazo</th>
+            <td mat-cell *matCellDef="let task">{{task.dataVencimento | date: 'dd/MM/yyyy'}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tarefaCompletada">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td mat-cell *matCellDef="let task">
+
+                <ng-container *ngIf="task.tarefaCompletada; else checkLate">
+                    <span style="color: green;">Feita</span>
+                </ng-container>
+
+                <ng-template #checkLate>
+                    <ng-container *ngIf="task.dataVencimento && (task.dataVencimento < HOJE); else doing">
+                        <span style="color: red;">Atrasada</span>
+                    </ng-container>
+                    <ng-template #doing>
+                        <span style="color: orange;">Fazendo</span>
+                    </ng-template>
+                </ng-template>
+
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [hidden]="!tasks" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[10, 20, 50]"
+        showFirstLastButtons>
+    </mat-paginator>
+</div>
