@@ -1,6 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { TaskService } from '../services/task.service';
 import { ITask } from '../models/ITask';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { FormControl, FormGroup } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-task-list',
@@ -10,16 +15,73 @@ import { ITask } from '../models/ITask';
 })
 export class TaskListComponent {
 
-  items: ITask[] = [];
+  public tasks!: MatTableDataSource<ITask>;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  filterForm!: FormGroup;
+
+
+  public displayedColumns: string[] = [
+    'id',
+    'titulo',
+    'descricao',
+    'dataVencimento',
+    'tarefaCompletada'
+  ];
+  defaultFilterColumn: string = "titulo";
+  defaultSortColumn: string = "titulo";
+  public defaultSortOrder: "asc" | "desc" = "asc";
+  HOJE = Date.now();
+  filtro?: string;
 
   constructor(private taskService: TaskService) { }
 
   ngOnInit() {
-    this.getItems();
+    this.filterForm = new FormGroup({
+      titulo: new FormControl('')
+    });
+
+    this.monitorarFiltro();
+      
+    this.loadData();
   }
 
-  getItems(): void {
-    this.taskService.getItems()
-      .subscribe(items => this.items = items);
+  private monitorarFiltro() {
+    this.filterForm.get('titulo')?.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe(query => {
+        this.loadData(query);
+      });
+  }
+
+  loadData(query?: string) {
+    var pageEvent = new PageEvent();
+    pageEvent.pageIndex = 0;
+    pageEvent.pageSize = 10;
+    this.filtro = query;
+    this.getData(pageEvent);
+  }
+
+  getData(event: PageEvent) {
+    if (!event) {
+      return;
+    }
+    this.taskService
+      .getItems(
+        event,
+        this.sort,
+        this.defaultSortColumn,
+        this.defaultSortOrder,
+        this.defaultFilterColumn,
+        this.filtro
+      )
+      .subscribe(resp => {
+        console.log(resp);
+        this.paginator.length = resp.total;
+        this.paginator.pageIndex = resp.pageIndex;
+        this.paginator.pageSize = resp.pageSize;
+        this.tasks = new MatTableDataSource<ITask>(resp.items);
+      }
+      );
   }
 }

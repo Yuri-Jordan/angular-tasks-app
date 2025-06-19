@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { InMemoryDbService } from 'angular-in-memory-web-api';
+import { InMemoryDbService, RequestInfo } from 'angular-in-memory-web-api';
 import { Observable } from 'rxjs';
 import { ITask } from '../tasks/models/ITask';
 import { TASK_MOCKS } from './mocks/ITaskMock';
+import { PaginatedItems } from '../shared/models/PaginatedItems';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +19,70 @@ export class InMemoryDataService implements InMemoryDbService {
     return { tasks: this.tasks };
   }
 
-  getAllItems(reqInfo: any): Observable<any> {
-    const items = this.tasks;
+  get(reqInfo: RequestInfo): Observable<PaginatedItems<any>> {
+    console.log('chamada GET', reqInfo);
+    let items = this.tasks;
+
+    // FILTRO
+    const filterColumn = reqInfo.query.get('filterColumn')?.[0];
+    const filterQuery = reqInfo.query.get('filterQuery')?.[0];
+
+    if (filterColumn && filterQuery) {
+      items = items.filter(item =>
+        String((item as any)[filterColumn])?.trim()?.toLowerCase()?.includes(filterQuery?.trim()?.toLowerCase())
+      );
+    }
+
+    //ORDENAÇÃO
+    const sortColumn = reqInfo.query.get('sortColumn')?.[0];
+    const sortOrder = reqInfo.query.get('sortOrder')?.[0] ?? 'asc';
+
+    if (sortColumn) {
+      items = [...items].sort((a, b) => {
+        let aValue = (a as any)[sortColumn];
+        let bValue = (b as any)[sortColumn];
+
+        if (aValue instanceof Date && bValue instanceof Date) {
+          aValue = aValue.getTime();
+          bValue = bValue.getTime();
+        }
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+          return sortOrder === 'asc'
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+
+        return sortOrder === 'asc'
+          ? (aValue > bValue ? 1 : aValue < bValue ? -1 : 0)
+          : (aValue < bValue ? 1 : aValue > bValue ? -1 : 0);
+      });
+    }
+
+    // PAGINAÇÃO
+    const pageIndex = Number(reqInfo.query.get('pageIndex') ?? 0);
+    const pageSize = Number(reqInfo.query.get('pageSize') ?? 10);
+
+    const start = pageIndex * pageSize;
+    const end = start + pageSize;
+    const pagedItems = items.slice(start, end);
+
+    console.log('paginacao', {
+      start,
+      end,
+      pageIndex,
+      pageSize,
+      pagedItems
+    });
+
+
     return reqInfo.utils.createResponse$(() => ({
-      body: items,
+      body: {
+        items: pagedItems,
+        total: items.length,
+        pageIndex,
+        pageSize
+      } as PaginatedItems<any>,
       status: 200,
     }));
   }
@@ -37,7 +98,7 @@ export class InMemoryDataService implements InMemoryDbService {
 
   addNewItem(reqInfo: any): Observable<any> {
     const newItem = reqInfo.utils.getJsonBody(reqInfo.req);
-    newItem.id = this.tasks.length + 1; 
+    newItem.id = this.tasks.length + 1;
     this.tasks.push(newItem);
     return reqInfo.utils.createResponse$(() => ({
       body: newItem,
