@@ -1,15 +1,16 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { HomeComponent } from './home/home.component';
-import { RouterLink } from '@angular/router';
+import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { InMemoryDataService } from './core/in-memory-data-service.service';
+import { HttpClientModule } from '@angular/common/http';
+import { AngularMaterialModule } from './angular-material-module/angular-material-module.module';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -19,16 +20,16 @@ import { RouterLink } from '@angular/router';
     HomeComponent
   ],
   imports: [
+    SharedModule,
+    AppRoutingModule,
+    HttpClientModule,
     BrowserModule,
-    AppRoutingModule,
-    MatIconModule,
-    MatButtonModule,
-    MatToolbarModule,
-    RouterLink,
-    AppRoutingModule,
+    HttpClientInMemoryWebApiModule.forRoot(
+      InMemoryDataService, { dataEncapsulation: false }
+    ),
+    AngularMaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
 })
 export class AppModule { }
