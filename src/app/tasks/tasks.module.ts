@@ -1,16 +1,18 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { TaskListComponent } from './task-list/task-list.component';
 import { RouterModule, Routes } from '@angular/router';
-import { TaskFormComponent } from '../task-form/task-form.component';
+import { TaskFormComponent } from './task-form/task-form.component';
+import { HttpClientModule } from '@angular/common/http';
+import { AngularMaterialModule } from '../angular-material-module/angular-material-module.module';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   {
-    path: '', 
+    path: '',
     component: TaskListComponent
   },
   {
-    path: 'new', 
+    path: 'new',
     component: TaskFormComponent
   }
 ];
@@ -22,8 +24,10 @@ const routes: Routes = [
     TaskFormComponent
   ],
   imports: [
-    CommonModule,
-    RouterModule.forChild(routes)
-  ]
+    SharedModule,
+    AngularMaterialModule,
+    RouterModule.forChild(routes),
+    HttpClientModule,
+  ],
 })
 export class TasksModule { }
