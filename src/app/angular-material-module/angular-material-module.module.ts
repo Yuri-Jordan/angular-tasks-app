@@ -9,8 +9,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { provideNativeDateAdapter } from '@angular/material/core';
-
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDialogModule } from '@angular/material/dialog';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 @NgModule({
   imports: [
     MatButtonModule,
@@ -22,6 +23,9 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatInputModule,
     MatDatepickerModule,
     MatFormFieldModule,
+    MatSlideToggleModule,
+    MatDialogModule,
+    MatProgressBarModule,
   ],
   exports: [
     MatButtonModule,
@@ -33,8 +37,11 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatInputModule,
     MatDatepickerModule,
     MatFormFieldModule,
+    MatSlideToggleModule,
+    MatDialogModule,
+    MatProgressBarModule,
   ],
-    providers: [
+  providers: [
     provideNativeDateAdapter(),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],

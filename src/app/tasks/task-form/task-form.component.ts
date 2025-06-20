@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ITask } from '../models/ITask';
+import { TaskService } from '../services/task.service';
 
 @Component({
   selector: 'app-task-form',
@@ -16,11 +17,12 @@ export class TaskFormComponent {
   form!: FormGroup;
   task?: ITask;
   id?: number;
-
+  HOJE = Date.now();
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
+    private taskService: TaskService,
   ) {
   }
 
@@ -31,78 +33,62 @@ export class TaskFormComponent {
       descricao: new FormControl('', Validators.required),
       dataVencimento: new FormControl('', Validators.required),
       tarefaCompletada: new FormControl(false)
-    }, 
+    },
       // null, 
       // this.tarefaDuplicada()
-  );
+    );
 
     this.loadData();
   }
 
   loadData() {
-
     var idParam = this.activatedRoute?.snapshot?.paramMap?.get('id');
     this.id = idParam ? +idParam : 0;
-    // if (this.id) {
-
-    //   var url = environment.baseUrl + 'api/Cities/' + this.id;
-    //   this.http.get<City>(url).subscribe({
-    //     next: (result) => {
-    //       this.task = result;
-    //       this.titulo = "Editando - " + this.task.name;
-
-    //       // update the form with the city value
-    //       this.form.patchValue(this.task);
-    //     },
-    //     error: (error) => console.error(error)
-    //   });
-    // }
-    // else {
-    //   this.titulo = "Criando nova tarefa";
-    // }
+    if (this.id) {
+      this.taskService
+        .getById(this.id)
+        .subscribe({
+          next: (result) => {
+            this.task = result;
+            this.titulo = "Editando - " + this.task.titulo;
+            this.form.patchValue(this.task);
+          },
+          error: (error) => console.error(error)
+        });
+    }
+    else {
+      this.titulo = "Criando nova tarefa";
+    }
   }
 
   onSubmit() {
     var task = (this.id) ? this.task : <ITask>{};
-    // if (task) {
-    //   task.name = this.form.controls['name'].value;
-    //   task.lat = +this.form.controls['lat'].value;
-    //   task.lon = +this.form.controls['lon'].value;
-    //   task.countryId = +this.form.controls['countryId'].value;
+    if (task) {
 
-    //   if (this.id) {
-    //     // EDIT mode
+      if (this.id) {
 
-    //     var url = environment.baseUrl + 'api/Cities/' + task.id;
-    //     this.http
-    //       .put<City>(url, task)
-    //       .subscribe({
-    //         next: (result) => {
-    //           console.log("City " + task!.id + " has been updated.");
-
-    //           // go back to cities view
-    //           this.router.navigate(['/cities']);
-    //         },
-    //         error: (error) => console.error(error)
-    //       });
-    //   }
-    //   else {
-    //     // ADD NEW mode
-    //     var url = environment.baseUrl + 'api/Cities';
-    //     this.http
-    //       .post<City>(url, task)
-    //       .subscribe({
-    //         next: (result) => {
-
-    //           console.log("City " + result.id + " has been created.");
-
-    //           // go back to cities view
-    //           this.router.navigate(['/cities']);
-    //         },
-    //         error: (error) => console.error(error)
-    //       });
-    //   }
-    // }
+        this.taskService
+          .update(this.id, this.form.value as ITask)
+          .subscribe({
+            next: (result) => {
+              this.taskService.openSnackBar(`Tarefa ${result.titulo} atualizada com sucesso!`, "Fechar");
+              this.router.navigate(['/tasks']);
+            },
+            error: (error) => console.error(error)
+          });
+      }
+      else {
+        this.taskService
+          .create(this.form.value as ITask)
+          .subscribe({
+            next: (result) => {
+              this.taskService.openSnackBar("Tarefa criada com sucesso!", "Fechar");
+              this.router.navigate(['/tasks']);
+            },
+            error: (error) => console.error(error)
+          });
+      }
+    }
   }
 
   // tarefaDuplicada(): AsyncValidatorFn {

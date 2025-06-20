@@ -25,7 +25,7 @@ import { SharedModule } from './shared/shared.module';
     HttpClientModule,
     BrowserModule,
     HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryDataService, { dataEncapsulation: false }
+      InMemoryDataService, { dataEncapsulation: false, delay: 1000 }
     ),
     AngularMaterialModule
   ],
