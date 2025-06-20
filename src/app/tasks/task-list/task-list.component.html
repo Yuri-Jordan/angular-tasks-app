@@ -7,7 +7,7 @@
 
 <form [formGroup]="filterForm">
     <mat-form-field form [hidden]="!tasks">
-        <input matInput formControlName="titulo" placeholder="Busque pelo Título da tarefa" />
+        <input matInput appAutofocus formControlName="titulo" placeholder="Busque pelo Título da tarefa" />
     </mat-form-field>
 </form>
 
