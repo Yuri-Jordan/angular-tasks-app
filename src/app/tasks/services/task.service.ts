@@ -78,9 +78,16 @@ export class TaskService {
     });
   }
 
-  openSnackBar(message: string, action: string) {
+  openSnackBarSucesso(message: string, action: string) {
     const config = new MatSnackBarConfig();
     config.duration = 7000; // 7s
+    this._snackBar.open(message, action, config);
+  }
+
+    openSnackBarNotFound(message: string, action: string) {
+    const config = new MatSnackBarConfig();
+    config.duration = 7000; // 7s
+    config.panelClass = ['snackbar-not-found'];
     this._snackBar.open(message, action, config);
   }
 
