@@ -23,13 +23,13 @@
         <ng-container matColumnDef="titulo">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Título</th>
             <td mat-cell *matCellDef="let task">
-                <a [routerLink]="['/tasks', task.id]">{{task.titulo}}</a>
+                <a [routerLink]="['/tasks', task.id]">{{task.titulo | truncar:20}}</a>
             </td>
         </ng-container>
 
         <ng-container matColumnDef="descricao">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Descrição</th>
-            <td mat-cell *matCellDef="let task">{{task.descricao}}</td>
+            <td mat-cell *matCellDef="let task">{{task.descricao | truncar:20}}</td>
         </ng-container>
 
         <ng-container matColumnDef="dataVencimento">

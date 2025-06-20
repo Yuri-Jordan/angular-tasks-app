@@ -1,7 +1,7 @@
 <mat-progress-bar *ngIf="id && !task" mode="indeterminate"></mat-progress-bar>
 
 <div class="task-edit">
-    <h1>{{titulo}} 
+    <h1>{{'' + titulo | truncar:50}} 
         <span *ngIf="task && !form?.get('tarefaCompletada')?.value && form?.get('dataVencimento')?.value && (form?.get('dataVencimento')?.value < HOJE)" style="color: red;">Atrasada</span>
     </h1>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
