@@ -8,7 +8,7 @@
 
         <mat-form-field>
             <mat-label>Titulo:</mat-label>
-            <input matInput formControlName="titulo" required placeholder="Digite um título">
+            <input matInput appAutofocus formControlName="titulo" required placeholder="Digite um título">
             <mat-error *ngFor="let error of getErrors(form.get('titulo')!, 'Título')">
                 {{error}}
             </mat-error>
