@@ -6,26 +6,19 @@
     </h1>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-        <p>
-            <mat-error *ngIf="form.invalid && form.hasError('tarefaDuplicada')">
-                <strong>ERRO</strong>:
-                Uma tarefa com o mesmo <i>nome</i>, <i>lat</i>, <i>lon</i> e <i>país</i> já existe.
-            </mat-error>
-        </p>
-
         <mat-form-field>
             <mat-label>Titulo:</mat-label>
             <input matInput formControlName="titulo" required placeholder="Digite um título">
-            <mat-error *ngIf="form.controls['titulo'].errors?.['required']">
-                Titulo é obrigatório.
+            <mat-error *ngFor="let error of getErrors(form.get('titulo')!, 'Título')">
+                {{error}}
             </mat-error>
         </mat-form-field>
 
         <mat-form-field>
             <mat-label>Descrição:</mat-label>
             <textarea matInput formControlName="descricao" required placeholder="Digite uma descrição"></textarea>
-            <mat-error *ngIf="form.controls['descricao'].errors?.['required']">
-                Descrição é obrigatória.
+            <mat-error *ngFor="let error of getErrors(form.get('descricao')!, 'Descrição')">
+                {{error}}
             </mat-error>
         </mat-form-field>
 
@@ -34,6 +27,9 @@
             <input formControlName="dataVencimento" matInput [matDatepicker]="picker">
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngFor="let error of getErrors(form.get('dataVencimento')!, 'Data de vencimento')">
+                {{error}}   
+            </mat-error>
         </mat-form-field>
         
         <mat-slide-toggle formControlName="tarefaCompletada">Tarefa concluída</mat-slide-toggle>

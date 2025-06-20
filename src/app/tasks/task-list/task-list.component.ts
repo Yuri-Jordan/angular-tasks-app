@@ -95,7 +95,7 @@ export class TaskListComponent {
         this.taskService
           .delete(task.id)
           .subscribe(resp => {
-            this.taskService.openSnackBar(`Tarefa ${resp.titulo} apagada com sucesso!`, "Fechar");
+            this.taskService.openSnackBarSucesso(`Tarefa ${resp.titulo} apagada com sucesso!`, "Fechar");
             this.loadData(this.filtro);
           }
           );
