@@ -1,7 +1,5 @@
+<mat-progress-bar *ngIf="!tasks" mode="indeterminate"></mat-progress-bar>
 <h1>Listagem de tarefas</h1>
-
-
-<p *ngIf="!tasks"><em>Carregando...</em></p>
 
 <button mat-flat-button color="primary" class="btn-add" *ngIf="tasks" [routerLink]="['/tasks', 'new']">
     Criar nova tarefa
@@ -25,13 +23,13 @@
         <ng-container matColumnDef="titulo">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Título</th>
             <td mat-cell *matCellDef="let task">
-                <a [routerLink]="['/tasks', task.id]">{{task.titulo}}</a>
+                <a [routerLink]="['/tasks', task.id]">{{task.titulo | truncar:20}}</a>
             </td>
         </ng-container>
 
         <ng-container matColumnDef="descricao">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Descrição</th>
-            <td mat-cell *matCellDef="let task">{{task.descricao}}</td>
+            <td mat-cell *matCellDef="let task">{{task.descricao | truncar:20}}</td>
         </ng-container>
 
         <ng-container matColumnDef="dataVencimento">
@@ -56,6 +54,18 @@
                     </ng-template>
                 </ng-template>
 
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Ações</th>
+            <td mat-cell *matCellDef="let task">
+                <button mat-icon-button color="warn" [routerLink]="['/tasks', task.id]">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="onDelete(task)">
+                    <mat-icon>delete</mat-icon>
+                </button>
             </td>
         </ng-container>
 

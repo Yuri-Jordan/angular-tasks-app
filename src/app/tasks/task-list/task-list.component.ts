@@ -26,7 +26,8 @@ export class TaskListComponent {
     'titulo',
     'descricao',
     'dataVencimento',
-    'tarefaCompletada'
+    'tarefaCompletada',
+    'actions',
   ];
   defaultFilterColumn: string = "titulo";
   defaultSortColumn: string = "titulo";
@@ -42,7 +43,7 @@ export class TaskListComponent {
     });
 
     this.monitorarFiltro();
-      
+
     this.loadData();
   }
 
@@ -83,5 +84,22 @@ export class TaskListComponent {
         this.tasks = new MatTableDataSource<ITask>(resp.items);
       }
       );
+  }
+
+  onDelete(task: ITask) {
+    const dialogRef = this.taskService.getDialog('0.2s', '0.2s', task);
+
+    dialogRef.afterClosed().subscribe(result => {
+
+      if (result !== undefined && result !== true) { // cliclou SIM
+        this.taskService
+          .delete(task.id)
+          .subscribe(resp => {
+            this.taskService.openSnackBarSucesso(`Tarefa ${resp.titulo} apagada com sucesso!`, "Fechar");
+            this.loadData(this.filtro);
+          }
+          );
+      }
+    });
   }
 }
