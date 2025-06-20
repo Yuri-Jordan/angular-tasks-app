@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { AngularMaterialModule } from '../../angular-material-module/angular-material-module.module';
 import { SharedModule } from '../../shared/shared.module';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 
 describe('TaskFormComponent', () => {
@@ -14,6 +15,7 @@ describe('TaskFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
         AngularMaterialModule,
         SharedModule,
       ],

@@ -1,6 +1,9 @@
+<mat-progress-bar *ngIf="id && !task" mode="indeterminate"></mat-progress-bar>
+
 <div class="task-edit">
-    <h1>{{titulo}}</h1>
-    <p *ngIf="id && !task"><em>Carregando...</em></p>
+    <h1>{{titulo}} 
+        <span *ngIf="task && !form?.get('tarefaCompletada')?.value && form?.get('dataVencimento')?.value && (form?.get('dataVencimento')?.value < HOJE)" style="color: red;">Atrasada</span>
+    </h1>
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
         <p>
@@ -32,6 +35,8 @@
             <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
+        
+        <mat-slide-toggle formControlName="tarefaCompletada">Tarefa concluída</mat-slide-toggle>
 
         <div>
             <button mat-flat-button color="primary" type="submit" [disabled]="!form.valid">

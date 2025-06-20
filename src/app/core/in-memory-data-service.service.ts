@@ -21,6 +21,11 @@ export class InMemoryDataService implements InMemoryDbService {
 
   get(reqInfo: RequestInfo): Observable<PaginatedItems<any>> {
     console.log('chamada GET', reqInfo);
+
+    if (reqInfo.id) {
+      return this.getById(reqInfo);
+    }
+
     let items = this.tasks;
 
     // FILTRO
@@ -87,7 +92,7 @@ export class InMemoryDataService implements InMemoryDbService {
     }));
   }
 
-  getItemById(reqInfo: any): Observable<any> {
+  getById(reqInfo: any): Observable<any> {
     const id = reqInfo.id;
     const item = this.tasks.find((i: any) => i.id === id);
     return reqInfo.utils.createResponse$(() => ({
@@ -96,7 +101,7 @@ export class InMemoryDataService implements InMemoryDbService {
     }));
   }
 
-  addNewItem(reqInfo: any): Observable<any> {
+  post(reqInfo: any): Observable<any> {
     const newItem = reqInfo.utils.getJsonBody(reqInfo.req);
     newItem.id = this.tasks.length + 1;
     this.tasks.push(newItem);
@@ -106,7 +111,7 @@ export class InMemoryDataService implements InMemoryDbService {
     }));
   }
 
-  updateItem(reqInfo: any): Observable<any> {
+  put(reqInfo: any): Observable<any> {
     const id = reqInfo.id;
     const updatedItem = reqInfo.utils.getJsonBody(reqInfo.req);
     const index = this.tasks.findIndex((i: any) => i.id === id);
@@ -124,7 +129,7 @@ export class InMemoryDataService implements InMemoryDbService {
     }
   }
 
-  deleteItem(reqInfo: any): Observable<any> {
+  delete(reqInfo: any): Observable<any> {
     const id = reqInfo.id;
     const index = this.tasks.findIndex((i: any) => i.id === id);
     if (index !== -1) {
