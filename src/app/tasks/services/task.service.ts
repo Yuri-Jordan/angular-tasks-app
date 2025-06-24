@@ -1,6 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ITask } from '../models/ITask';
 import { PageEvent } from '@angular/material/paginator';
 import { PaginatedItems } from '../../shared/models/PaginatedItems';
@@ -19,6 +19,8 @@ export class TaskService {
   readonly dialog = inject(MatDialog);
   private _snackBar = inject(MatSnackBar);
   public HOJE = Date.now();
+  private tasksSubject = new BehaviorSubject<PaginatedItems<ITask>>({} as PaginatedItems<ITask>);
+  public tasks$ = this.tasksSubject.asObservable();
 
   private url = 'api/tasks';
 
@@ -31,7 +33,7 @@ export class TaskService {
     defaultSortOrder: string,
     defaultFilterColumn: string,
     filterQuery?: string,
-  ): Observable<PaginatedItems<any>> {
+  ): void {
 
     var params = new HttpParams()
       .set("pageIndex", event.pageIndex.toString())
@@ -45,7 +47,14 @@ export class TaskService {
         .set("filterQuery", filterQuery);
     }
 
-    return this.http.get<PaginatedItems<ITask>>(this.url, { params: params });
+    this.http.get<PaginatedItems<ITask>>(this.url, { params: params }).subscribe(resp => {
+      next: this.tasksSubject.next(resp);
+      error: (err: HttpErrorResponse) => {
+        console.error('Erro ao buscar:', err);
+        this.tasksSubject.next({} as PaginatedItems<ITask>);
+        this.openSnackBarNotFound('Nenhuma tarefa encontrada', 'Fechar');
+      };
+    });
   }
 
   getById(id: number): Observable<ITask> {
@@ -64,7 +73,7 @@ export class TaskService {
     return this.http.delete<ITask>(`${this.url}/${id}`);
   }
 
-    getDialog(enterAnimationDuration: string, exitAnimationDuration: string, task: ITask): MatDialogRef<DeleteDialogComponent> {
+  getDialog(enterAnimationDuration: string, exitAnimationDuration: string, task: ITask): MatDialogRef<DeleteDialogComponent> {
     return this.dialog.open(DeleteDialogComponent, {
       data: {
         title: 'Confirmação',
@@ -84,7 +93,7 @@ export class TaskService {
     this._snackBar.open(message, action, config);
   }
 
-    openSnackBarNotFound(message: string, action: string) {
+  openSnackBarNotFound(message: string, action: string) {
     const config = new MatSnackBarConfig();
     config.duration = 7000; // 7s
     config.panelClass = ['snackbar-not-found'];

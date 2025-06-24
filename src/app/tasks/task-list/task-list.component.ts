@@ -43,6 +43,7 @@ export class TaskListComponent {
     });
 
     this.monitorarFiltro();
+    this.monitorarTasks();
 
     this.loadData();
   }
@@ -52,6 +53,18 @@ export class TaskListComponent {
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(query => {
         this.loadData(query);
+      });
+  }
+
+    private monitorarTasks() {
+    this.taskService.tasks$
+      .subscribe(resp => {
+        console.log(resp);
+        if(!this.paginator) return;
+        this.paginator.length = resp.total;
+        this.paginator.pageIndex = resp.pageIndex;
+        this.paginator.pageSize = resp.pageSize;
+        this.tasks = new MatTableDataSource<ITask>(resp.items);
       });
   }
 
@@ -75,14 +88,6 @@ export class TaskListComponent {
         this.defaultSortOrder,
         this.defaultFilterColumn,
         this.filtro
-      )
-      .subscribe(resp => {
-        console.log(resp);
-        this.paginator.length = resp.total;
-        this.paginator.pageIndex = resp.pageIndex;
-        this.paginator.pageSize = resp.pageSize;
-        this.tasks = new MatTableDataSource<ITask>(resp.items);
-      }
       );
   }
 
